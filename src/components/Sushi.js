@@ -4,7 +4,11 @@ function Sushi({sushi, onEatSushi}) {
   const {name, img_url, price, eaten} = sushi
 
   function handleClick () {
-    onEatSushi(sushi)
+    if (!eaten) {
+      onEatSushi(sushi)
+    } else {
+      alert("can't eat an empty plate!")
+    }
   }
     
   
@@ -12,8 +16,7 @@ function Sushi({sushi, onEatSushi}) {
   return (
     <div className="sushi">
       <div className="plate" onClick={handleClick}>
-        {/* Tell me if this sushi has been eaten! */}
-        {false ? null : (
+        {eaten ? null : (
           <img
             src={img_url}
             alt={name}
@@ -22,7 +25,7 @@ function Sushi({sushi, onEatSushi}) {
         )}
       </div>
       <h4 className="sushi-details">
-        {/* Give me a name! */} - ${/* Give me a price! */}
+        {name} - ${price}
       </h4>
     </div>
   );

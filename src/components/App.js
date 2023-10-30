@@ -6,26 +6,37 @@ const API = "http://localhost:3001/sushis";
 
 function App() {
   const [sushis, setSushis] = useState([])
+  const [wallet, setWallet] = useState(100)
 
   useEffect(() => {
     fetch(API)
       .then (r => r.json())
       .then (sushis => {
-        setSushis(sushis)
+        const updatedSushis = sushis.map((sushi) => {
+          return {...sushi, eaten: false}
+        })
+        setSushis(updatedSushis)
       })
   }, [])
+  
+   function handleEatSushi(eatenSushi) {
+    if (wallet >= eatenSushi.price) {
+      const updatedSushis = sushis.map((sushi) => {
+        if (sushi.id === eatenSushi.id) {
+          return { ...sushi, eaten: true }
+        } else {
+          return sushi
+        }
+      });
 
-  function handleEatSushi(eatenSushi) {
-    const updatedSushis = sushis.map((sushi) => {
-      if (sushi.id === eatenSushi.id) return {...sushi}
-      return sushi
-    })
-
-    setSushis(updatedSushis)
+      setSushis(updatedSushis);
+      setWallet((wallet) => wallet - eatenSushi.price);
+    } else {
+      alert("Need more 💸");
+    }
   }
 
-
-  
+  const eatenSushis = sushis.filter(sushi => sushi.eaten)
 
 
   return (
@@ -34,7 +45,7 @@ function App() {
         sushis={sushis} 
         onEatSushi = {handleEatSushi}
       />
-      <Table />
+      <Table wallet = {wallet} plates={eatenSushis}/>
     </div>
   );
 }
